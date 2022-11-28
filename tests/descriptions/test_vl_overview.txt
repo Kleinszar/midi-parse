@@ -1,0 +1,20 @@
+Test cases for variable length
+
+Test 1: Reading variable length values
+
+Expected value, Hex in file
+1.  0x00000000, 00
+2.  0x00000040, 40
+3.  0x0000007F, 7F
+4.  0x00000080, 81 00
+5.  0x00002000, C0 00
+6.  0x00003FFF, FF 7F
+7.  0x00004000, 81 80 80
+8.  0x00100000, C0 80 00
+9.  0x001FFFFF, FF FF 7F
+10. 0x00200000, 81 80 80 00
+11. 0x08000000, C0 80 80 00
+12. 0x0FFFFFFF, FF FF FF 7F
+
+File contents
+00 40 7F 81 00 C0 00 FF 7F 81 80 80 C0 80 00 FF FF 7F 81 80 80 00 C0 80 80 00 FF FF FF 7F

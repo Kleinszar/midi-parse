@@ -1,0 +1,9 @@
+# Debugging #
+.vscode/**
+
+# Compiled #
+build/**
+
+# Setup #
+*.sh
+*.bat
