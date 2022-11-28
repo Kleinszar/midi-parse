@@ -1,4 +1,4 @@
-#include <midi.h>
+#include <MIDI/midi.h>
 
 using namespace std;
 
