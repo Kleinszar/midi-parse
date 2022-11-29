@@ -27,7 +27,7 @@ class Track {
         static const std::map<int, std::string> MIDI_META_EVENTS;
         static const std::map<int, std::string> MIDI_REG_EVENTS;
         static const std::map<int, std::string> MIDI_CONTROLLER_TYPES;
-        static const std::map<int, uint> REG_EVENT_PARAM_LENGTHS;
+        static const std::map<int, uint8_t> REG_EVENT_PARAM_LENGTHS;
 
         Reader* file_stream;
         uint64_t track_length;

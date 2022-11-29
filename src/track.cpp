@@ -128,7 +128,7 @@ const std::map<int, std::string> Track::MIDI_CONTROLLER_TYPES = {
     {0x7F, "127 - Mode Message"},
 };
 
-const std::map<int, uint> Track::REG_EVENT_PARAM_LENGTHS = {
+const std::map<int, uint8_t> Track::REG_EVENT_PARAM_LENGTHS = {
     {0x8, 2}, // 8 - Note OFF (note, vel)
     {0x9, 2}, // 9 - Note ON (note, vel)
     {0xA, 2}, // 10 - Note Aftertouch (note, val)
