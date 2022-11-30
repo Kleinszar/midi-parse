@@ -14,6 +14,7 @@ typedef struct event_meta_data {
     event_category category;
     int64_t id;
     uint64_t delta_time;
+    uint64_t absolute_time;
     uint8_t args[2];
 } event_t;
 

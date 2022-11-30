@@ -96,14 +96,7 @@ int Midi::read_track()
 
     std::vector<event_t> events = curr_track.get_events();
     std::cout << "Num Events: " << events.size() << std::endl;
-
-    for (std::vector<event_t>::iterator it = events.begin(); it != events.end(); it++)
-    {
-        std::cout << "Category: " << it->category << std::endl;
-        std::cout << "ID: " << it->id << std::endl;
-        std::cout << "DeltaT: " << it->delta_time << std::endl;
-        std::cout << "Arguments: " << hex <<int(it->args[0]) << "\t" << int(it->args[1]) << std::endl;
-    }
+    this->all_tracks.push_back(curr_track);
     return 0;
 };
 
@@ -113,20 +106,20 @@ int Midi::parse_midi()
     ret = this->parse_header();
     if (ret != 0)
     {
-        std::cout << "Problem parsing Header" << endl;
+        std::cout << "Problem parsing Header" << std::endl;
         return -1;
     };
 
     if (this->num_tracks <= 0) {
-        std::cout << "There are no tracks in the file" << endl;
+        std::cout << "There are no tracks in the file" << std::endl;
         return -1;
     }
-    std::cout << "num_tracks: " << this->num_tracks << endl;
+    std::cout << "num_tracks: " << this->num_tracks << std::endl;
     for (size_t i = 0; i < this->num_tracks; i++) {
-        std::cout << "Reading track " << i << endl;
+        std::cout << "Reading track " << i << std::endl;
         ret = this->read_track();
         if (ret != 0) {
-            std::cout << "Error" << endl;
+            std::cout << "Error" << std::endl;
             break;
         }
     }
@@ -134,6 +127,12 @@ int Midi::parse_midi()
 }
 
 // Public //------------------------------------------------------------------------------------------
+
+std::vector<Track> Midi::get_tracks()
+{
+    return this->all_tracks;
+}
+
 
 
 /*

@@ -47,6 +47,7 @@ class Midi {
         int read_track();
         int parse_midi();
 
+        std::vector<Track> get_tracks();
 };
 
 #endif

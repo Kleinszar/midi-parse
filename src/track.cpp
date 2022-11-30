@@ -162,7 +162,7 @@ int Track:: handle_next_meta_event(event_t& event)
 
     // End
     
-    std::cout << "Meta Event: " << MIDI_META_EVENTS.at(event_subtype) << std::endl;
+    // /*DEBUG*/ std::cout << "Meta Event: " << MIDI_META_EVENTS.at(event_subtype) << std::endl;
 
     if (event_subtype == END_OF_TRACK_IDENTIFIER)
     {
@@ -179,7 +179,7 @@ int Track::handle_next_regular_event(event_t& event, uint8_t type_and_channel)
     uint8_t event_type = (type_and_channel & EVENT_TYPE_MASK) >> 4;
     uint8_t midi_channel = (type_and_channel & MIDI_CHANNEL_MASK);
 
-    std::cout << "Reg Event: " << MIDI_REG_EVENTS.at(event_type) << "\n";
+    // /*DEBUG*/ std::cout << "Reg Event: " << MIDI_REG_EVENTS.at(event_type) << "\n";
 
     event.id = event_type;
 
@@ -188,7 +188,7 @@ int Track::handle_next_regular_event(event_t& event, uint8_t type_and_channel)
     for (size_t i = 0; i < REG_EVENT_PARAM_LENGTHS.at(event_type); i++)
     {
         event.args[i] = this->file_stream->read_fixed_length(1);
-        std::cout << "Event argument: " << event.args[i] << "\n";
+        // /*DEBUG*/ std::cout << "Event argument: " << event.args[i] << "\n";
     }
     return 0;
 };
@@ -205,7 +205,7 @@ int Track::read_track_PPQN()
 {
     int flag = 0;
     int num_events = 0;
-    uint64_t total_time;
+    uint64_t total_time = 0;
 
     std::vector<char> track_identifier = file_stream->get_next(TRACK_IDENTIFIER_LENGTH);
     std::string head = std::string(track_identifier.begin(), track_identifier.end());
@@ -225,6 +225,9 @@ int Track::read_track_PPQN()
 
         uint32_t delta_time = this->file_stream->read_variable_length();
         next_event.delta_time = delta_time;
+
+        total_time += delta_time;
+        next_event.absolute_time = total_time;
 
         uint8_t event_type = this->file_stream->read_fixed_length(1);
         if (event_type == META_EVENT_IDENTIFIER)
