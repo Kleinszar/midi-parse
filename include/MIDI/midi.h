@@ -16,9 +16,9 @@ class Midi {
         static constexpr uint16_t SMTPE_FORMAT_MASK = {0b0111'1111'0000'0000};
         static constexpr uint16_t TICKS_PER_FRAME_MASK = {0b0000'0000'1111'1111};
 
-        static constexpr size_t HEADER_IDENTIFIER_LENGTH = 4;
-        static constexpr size_t HEADER_LENGTH_SIZE = 4;
-        static constexpr size_t STANDARD_HEADER_LENGTH = 6;
+        static constexpr uint8_t HEADER_IDENTIFIER_LENGTH = 4;
+        static constexpr uint8_t HEADER_LENGTH_SIZE = 4;
+        static constexpr uint8_t STANDARD_HEADER_LENGTH = 6;
 
         static const std::map<int, std::string> FILE_FORMAT;
         static const std::map<int, std::string> DIVISION_TYPE;

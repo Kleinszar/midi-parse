@@ -22,7 +22,7 @@ class Track {
     private:
         static constexpr uint8_t EVENT_TYPE_MASK = {0b1111'0000};
         static constexpr uint8_t MIDI_CHANNEL_MASK = {0b0000'1111};
-        static constexpr size_t TRACK_IDENTIFIER_LENGTH = 4;
+        static constexpr uint8_t TRACK_IDENTIFIER_LENGTH = 4;
 
 
         static const std::map<int, std::string> MIDI_META_EVENTS;

@@ -13,9 +13,9 @@
 */
 class Reader {
     private:
-        static const size_t MAX_BYTES = 4;
-        static const size_t FLAG_OFFSET = 7;
-        static const size_t BITS_LENGTH = 7;
+        static const uint64_t MAX_BYTES = 4;
+        static const uint64_t FLAG_OFFSET = 7;
+        static const uint64_t BITS_LENGTH = 7;
 
         static constexpr uint8_t MASK_VARIABLE_LENGTH_VALUE {0b0111'1111};
         static constexpr uint8_t MASK_VARIABLE_LENGTH_FLAG {0b1000'0000};
@@ -24,6 +24,7 @@ class Reader {
         uint64_t bytes_read;
         bool file_good;
         std::vector<char> data;
+        char** raw_data;
 
         Reader();
         ~Reader();
@@ -46,7 +47,8 @@ class Reader {
         /**
          * Reads from the file, a value with a fixed length 
         */
-        uint64_t read_fixed_length(size_t len);
+        uint64_t read_fixed_length(uint64_t len);
+         
 };
 
 class Writer

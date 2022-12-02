@@ -80,7 +80,7 @@ uint32_t Reader::read_variable_length()
     uint64_t length = 0;
     uint32_t value = 0;
 
-    for (size_t i = curr_position; i < curr_position + this->MAX_BYTES; i++)
+    for (uint64_t i = curr_position; i < curr_position + this->MAX_BYTES; i++)
     {
         uint8_t curr_byte = this->data.at(i);
         value = (value << BITS_LENGTH) + (curr_byte & MASK_VARIABLE_LENGTH_VALUE);
@@ -100,11 +100,11 @@ uint32_t Reader::read_variable_length()
 /**
  *  Assumes that most significant bits are placed first. Reads an unsigned value.
 */
-uint64_t Reader::read_fixed_length(size_t len)
+uint64_t Reader::read_fixed_length(uint64_t len)
 {
     uint64_t curr_posititon = this->bytes_read;
     uint64_t value = 0;
-    for (size_t i = curr_posititon; i < curr_posititon + len; i++)
+    for (uint64_t i = curr_posititon; i < curr_posititon + len; i++)
     {
         uint8_t curr_byte = this->data.at(i);
         value = (value << 8) + curr_byte;
