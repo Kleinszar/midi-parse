@@ -23,7 +23,7 @@ class Reader {
     public:
         uint64_t bytes_read;
         bool file_good;
-        std::vector<char> data;
+        std::vector<uint8_t> data;
         char** raw_data;
 
         Reader();

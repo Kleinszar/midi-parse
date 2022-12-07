@@ -18,19 +18,20 @@ Reader::~Reader()
 // Static //------------------------------------------------------------------------------------------
 
 // Member //------------------------------------------------------------------------------------------
-
-
 int Reader::read_file(std::string file_name)
 {
-    std::ifstream input_stream(file_name, std::ios::binary | std::ios::ate); // Seek to end
+    std::ifstream input_stream(file_name, std::ios::binary);
 
     if (!input_stream.is_open())
     {
         perror(("Cannot open file " + file_name).c_str());
         return -1;
     }
-    
-    std::ifstream::pos_type position = input_stream.tellg(); // Get current position (Size of file)
+
+    this->data = std::vector<uint8_t>(
+        (std::istreambuf_iterator<char>(input_stream)),
+        (std::istreambuf_iterator<char>())
+    );
 
     if(input_stream.bad())
     {
@@ -38,26 +39,10 @@ int Reader::read_file(std::string file_name)
         return -1;
     }
 
-    if (position == 0)
-    {
-        return -1; // Empty file
-        input_stream.close();
-    }
-    std::vector<char> raw_data(position);
-    input_stream.seekg(0, std::ios::beg);
-    input_stream.read(&raw_data[0], position);
-    input_stream.close();
-    this->data = raw_data;
     this->file_good = true;
-    /*
-    for (std::vector<char>::iterator it = this->data.begin(); it != this->data.end(); it++)
-    {
-        std::cout << *it << std::hex << " ";
-    }
-    */
-
     return 0;
 }
+
 
 std::vector<char> Reader::get_next(uint64_t num_bytes)
 {
