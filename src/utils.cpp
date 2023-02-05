@@ -4,21 +4,21 @@
 
 
 // Constructors //------------------------------------------------------------------------------------
-Reader::Reader()
+midi::Reader::Reader()
 {
-    this->bytes_read = 0;
-    this->file_good = false;
+    bytes_read = 0;
+    file_good = false;
 };
 
-Reader::~Reader()
+midi::Reader::~Reader()
 {
-    this->data.clear();
+    data.clear();
 };
 
 // Static //------------------------------------------------------------------------------------------
 
 // Member //------------------------------------------------------------------------------------------
-int Reader::read_file(std::string file_name)
+int midi::Reader::read_file(std::string file_name)
 {
     std::ifstream input_stream(file_name, std::ios::binary);
 
@@ -28,7 +28,7 @@ int Reader::read_file(std::string file_name)
         return -1;
     }
 
-    this->data = std::vector<uint8_t>(
+    data = std::vector<uint8_t>(
         (std::istreambuf_iterator<char>(input_stream)),
         (std::istreambuf_iterator<char>())
     );
@@ -39,16 +39,16 @@ int Reader::read_file(std::string file_name)
         return -1;
     }
 
-    this->file_good = true;
+    file_good = true;
     return 0;
 }
 
 
-std::vector<char> Reader::get_next(uint64_t num_bytes)
+std::vector<char> midi::Reader::get_next(uint64_t num_bytes)
 {
-    auto position = this->data.begin() + this->bytes_read;
+    auto position = data.begin() + bytes_read;
     std::vector<char> next_block = std::vector<char>(position, position + num_bytes);
-    this->bytes_read += num_bytes;
+    bytes_read += num_bytes;
     return next_block;
 };
 
@@ -59,15 +59,15 @@ std::vector<char> Reader::get_next(uint64_t num_bytes)
  * Up to a max of 4 bytes (32 bits). Bit 7 is a flag, that is set if the value has not ended.
  * All 1 byte chunks have bit 7 set except for the last chunk, indicating the end.
 */
-uint32_t Reader::read_variable_length()
+uint32_t midi::Reader::read_variable_length()
 {
-    uint64_t curr_position = this->bytes_read;
+    uint64_t curr_position = bytes_read;
     uint64_t length = 0;
     uint32_t value = 0;
 
-    for (uint64_t i = curr_position; i < curr_position + this->MAX_BYTES; i++)
+    for (uint64_t i = curr_position; i < curr_position + MAX_BYTES; i++)
     {
-        uint8_t curr_byte = this->data.at(i);
+        uint8_t curr_byte = data.at(i);
         value = (value << BITS_LENGTH) + (curr_byte & MASK_VARIABLE_LENGTH_VALUE);
         ++length;
         // Check flag for end of variable value, set = not ended.
@@ -78,22 +78,22 @@ uint32_t Reader::read_variable_length()
             break;
         }
     }
-    this->bytes_read += length;
+    bytes_read += length;
     return value;
 };
 
 /**
  *  Assumes that most significant bits are placed first. Reads an unsigned value.
 */
-uint64_t Reader::read_fixed_length(uint64_t len)
+uint64_t midi::Reader::read_fixed_length(uint64_t len)
 {
-    uint64_t curr_posititon = this->bytes_read;
+    uint64_t curr_posititon = bytes_read;
     uint64_t value = 0;
     for (uint64_t i = curr_posititon; i < curr_posititon + len; i++)
     {
-        uint8_t curr_byte = this->data.at(i);
+        uint8_t curr_byte = data.at(i);
         value = (value << 8) + curr_byte;
     }
-    this->bytes_read += len;
+    bytes_read += len;
     return value;
 };

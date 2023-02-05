@@ -9,6 +9,7 @@
 #include <MIDI/utils.h>
 
 using namespace std;
+using namespace midi;
 
 // Writes a series of hex values represented in by string to a file in bytes
 // Overwrites the previous file

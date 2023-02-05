@@ -2,7 +2,7 @@
 
 // Constants //---------------------------------------------------------------------------------------
 
-const std::map<int, std::string> Track::MIDI_META_EVENTS = {
+const std::map<int, std::string> midi::Track::MIDI_META_EVENTS = {
     {0x00, "0 - Sequence Number (len, Number_part1 MSB, Number_part2 LSB)"},
     {0x01, "1 - Text Event"},
     {0x02, "2 - CopyRight Notice"},
@@ -20,7 +20,7 @@ const std::map<int, std::string> Track::MIDI_META_EVENTS = {
     {0x7F, "127 - Sequencer Specific"},
 };
 
-const std::map<int, std::string> Track::MIDI_REG_EVENTS = {
+const std::map<int, std::string> midi::Track::MIDI_REG_EVENTS = {
     {0x8, "8 - Note OFF (note, vel)"},
     {0x9, "9 - Note ON (note, vel)"},
     {0xA, "10 - Note Aftertouch (note, val)"},
@@ -30,7 +30,7 @@ const std::map<int, std::string> Track::MIDI_REG_EVENTS = {
     {0xE, "14 - Pitch Bend (val lsb, val msb)"},
 };
 
-const std::map<int, std::string> Track::MIDI_CONTROLLER_TYPES = {
+const std::map<int, std::string> midi::Track::MIDI_CONTROLLER_TYPES = {
     {0x00, "0 - Band Slelect"},
     {0x01, "1 - Modulation"},
     {0x02, "2 - Breath Controller"},
@@ -128,7 +128,7 @@ const std::map<int, std::string> Track::MIDI_CONTROLLER_TYPES = {
     {0x7F, "127 - Mode Message"},
 };
 
-const std::map<int, uint8_t> Track::REG_EVENT_PARAM_LENGTHS = {
+const std::map<int, uint8_t> midi::Track::REG_EVENT_PARAM_LENGTHS = {
     {0x8, 2}, // 8 - Note OFF (note, vel)
     {0x9, 2}, // 9 - Note ON (note, vel)
     {0xA, 2}, // 10 - Note Aftertouch (note, val)
@@ -140,22 +140,22 @@ const std::map<int, uint8_t> Track::REG_EVENT_PARAM_LENGTHS = {
 
 
 // Constructors //------------------------------------------------------------------------------------
-Track::~Track(){};
-Track::Track(Reader* stream)
+midi::Track::~Track(){};
+midi::Track::Track(Reader* stream)
 {
-    this->file_stream = stream;
+    file_stream = stream;
 };
 
 // Private //-----------------------------------------------------------------------------------------
 
 
-int Track:: handle_next_meta_event(event_t& event)
+int midi::Track:: handle_next_meta_event(event_t& event)
 {
     event.category = meta;
     
-    int event_subtype = this->file_stream->read_fixed_length(1);
-    uint32_t event_length = this->file_stream->read_variable_length();
-    std::vector<char> event_data = this->file_stream->get_next(event_length);
+    int event_subtype = file_stream->read_fixed_length(1);
+    uint32_t event_length = file_stream->read_variable_length();
+    std::vector<char> event_data = file_stream->get_next(event_length);
 
     // Process data
     event.id = event_subtype;
@@ -172,7 +172,7 @@ int Track:: handle_next_meta_event(event_t& event)
 
 };
 
-int Track::handle_next_regular_event(event_t& event, uint8_t type_and_channel)
+int midi::Track::handle_next_regular_event(event_t& event, uint8_t type_and_channel)
 {
     event.category = regular;
 
@@ -187,21 +187,21 @@ int Track::handle_next_regular_event(event_t& event, uint8_t type_and_channel)
 
     for (size_t i = 0; i < REG_EVENT_PARAM_LENGTHS.at(event_type); i++)
     {
-        event.args[i] = this->file_stream->read_fixed_length(1);
+        event.args[i] = file_stream->read_fixed_length(1);
         // /*DEBUG*/ std::cout << "Event argument: " << event.args[i] << "\n";
     }
     return 0;
 };
 
-std::vector<event_t> Track::get_events()
+std::vector<midi::event_t> midi::Track::get_events()
 {
-    return this->event_list;
+    return event_list;
 }
 
 // Public //------------------------------------------------------------------------------------------
 
 
-int Track::read_track_PPQN()
+int midi::Track::read_track_PPQN()
 {
     int flag = 0;
     int num_events = 0;
@@ -215,7 +215,7 @@ int Track::read_track_PPQN()
         return -1;
     }
 
-    int32_t track_length = this->file_stream->read_fixed_length(4);
+    int32_t track_length = file_stream->read_fixed_length(4);
 
     std::cout << "Track Length: " << track_length << "\n";
 
@@ -223,22 +223,22 @@ int Track::read_track_PPQN()
     {
         event_t next_event;
 
-        uint32_t delta_time = this->file_stream->read_variable_length();
+        uint32_t delta_time = file_stream->read_variable_length();
         next_event.delta_time = delta_time;
 
         total_time += delta_time;
         next_event.absolute_time = total_time;
 
-        uint8_t event_type = this->file_stream->read_fixed_length(1);
+        uint8_t event_type = file_stream->read_fixed_length(1);
         if (event_type == META_EVENT_IDENTIFIER)
         {
-            flag = this->handle_next_meta_event(next_event);
+            flag = handle_next_meta_event(next_event);
         }
         else
         {
-            flag = this->handle_next_regular_event(next_event, event_type);
+            flag = handle_next_regular_event(next_event, event_type);
         }
-        this->event_list.push_back(next_event);
+        event_list.push_back(next_event);
     }
 
     return 0;
