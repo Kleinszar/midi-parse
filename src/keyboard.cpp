@@ -1,4 +1,4 @@
-#include <MIDI/keyboard.h>
+#include <MIDI/keyboard.hpp>
 
 std::string midi::KeyBoard::midi_to_note(int midi_value, bool sharp)
 {

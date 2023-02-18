@@ -6,7 +6,7 @@
 #include <array>
 
 // Testing utils
-#include <MIDI/utils.h>
+#include <MIDI/utils.hpp>
 
 using namespace std;
 using namespace midi;

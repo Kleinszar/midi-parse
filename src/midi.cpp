@@ -1,4 +1,4 @@
-#include <MIDI/midi.h>
+#include <MIDI/midi.hpp>
 
 // Constants //---------------------------------------------------------------------------------------
 const std::map<int, std::string> midi::Midi::FILE_FORMAT = {

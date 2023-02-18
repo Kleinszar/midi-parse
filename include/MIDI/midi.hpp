@@ -6,8 +6,9 @@
 #include <string>
 #include <map>
 #include <cassert>
-#include "track.h"
-#include "utils.h"
+
+#include "track.hpp"
+#include "utils.hpp"
 
 namespace midi
 {
