@@ -20,7 +20,6 @@ const std::map<int, std::string> Midi::DIVISION_TYPE = {
     {1, "SMTPE"},
 };
 
-
 // Constructors //---------------------------------------------------------------------------------
 
 Midi::Midi(){};
@@ -146,7 +145,6 @@ error_status_t Midi::open_to_read(std::string file_name)
     Midi::file_stream = Reader();
     return 0;
 }
-
 
 /*
     switch(event_subtype)
