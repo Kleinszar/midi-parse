@@ -105,8 +105,8 @@ int test_vl()
 
     cout << endl << "Testing Read File" << endl << endl;
     Reader vl_read;
-    vl_read.read_file(test_file);
-    if (!vl_read.file_good)
+    int error = vl_read.read_file(test_file);
+    if (error)
     {
         cout << "File does not exits" << endl;
         return 1;
@@ -135,6 +135,6 @@ int test_vl()
 int main()
 {
     // Test variable length reads
-    int ret_val = test_vl();
-    return ret_val;
+    int error = test_vl();
+    return error;
 };

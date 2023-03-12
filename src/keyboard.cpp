@@ -1,12 +1,61 @@
 #include <MIDI/keyboard.hpp>
 
-std::string midi::KeyBoard::midi_to_note(int midi_value, bool sharp)
+namespace midi
+{
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// CLASS KeyBoard //-------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Constants //------------------------------------------------------------------------------------
+
+const std::map<int, std::string> KeyBoard::NOTE_DICT_SHARP = {
+    {0, "C"},
+    {1, "C#"},
+    {2, "D"},
+    {3, "D#"},
+    {4, "E"},
+    {5, "F"},
+    {6, "F#"},
+    {7, "G"},
+    {8, "G#"},
+    {9, "A"},
+    {10, "A#"},
+    {11, "B"},
+};
+
+const std::map<int, std::string> KeyBoard::NOTE_DICT_FLAT = {
+    {0, "C"},
+    {1, "C#"},
+    {2, "D"},
+    {3, "D#"},
+    {4, "E"},
+    {5, "F"},
+    {6, "F#"},
+    {7, "G"},
+    {8, "G#"},
+    {9, "A"},
+    {10, "A#"},
+    {11, "B"},
+};
+
+
+// Constructors //---------------------------------------------------------------------------------
+
+
+// Methods //--------------------------------------------------------------------------------------
+
+// Public:
+
+std::string KeyBoard::midi_to_note(int midi_value, bool sharp)
 {
     if (sharp) {
-        return NOTE_DICT_SHARP[midi_value] + std::to_string(midi_value / 12 - 2);
+        return NOTE_DICT_SHARP.at(midi_value) + std::to_string(midi_value / 12 - 2);
     }
     else
     {
-        return NOTE_DICT_FLAT[midi_value] + std::to_string(midi_value / 12 - 2);
+        return NOTE_DICT_FLAT.at(midi_value) + std::to_string(midi_value / 12 - 2);
     }
 }
+
+} // namespace midi

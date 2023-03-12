@@ -18,7 +18,7 @@ int main()
         for (vector<event_t>::iterator event = events.begin(); event < events.end(); event++)
         {
             cout << "Category: " << event->category << endl;
-            cout << "ID: " << event->id << endl;
+            cout << "ID: " << event->event_type << endl;
             cout << "DeltaT: " << event->delta_time << endl;
             cout << "Arguments: " << hex <<int(event->args[0]) << "\t" << int(event->args[1]) << endl;
             cout << "absolute time: " << event->absolute_time << endl;

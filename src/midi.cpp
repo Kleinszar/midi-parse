@@ -1,45 +1,90 @@
 #include <MIDI/midi.hpp>
 
-// Constants //---------------------------------------------------------------------------------------
-const std::map<int, std::string> midi::Midi::FILE_FORMAT = {
+namespace midi
+{
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// CLASS Midi //-----------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Constants //------------------------------------------------------------------------------------
+
+const std::map<int, std::string> Midi::FILE_FORMAT = {
     {0, "Single Track"},
     {1, "Multi Track Simultaneous"},
     {2, "Multi Track Independent"},
 };
 
-const std::map<int, std::string> midi::Midi::DIVISION_TYPE = {
+const std::map<int, std::string> Midi::DIVISION_TYPE = {
     {0, "PPQN"},
     {1, "SMTPE"},
 };
 
 
-// Constructors //------------------------------------------------------------------------------------
-midi::Midi::Midi(){};
-midi::Midi::~Midi(){};
+// Constructors //---------------------------------------------------------------------------------
 
-midi::Midi::Midi(std::string file_name)
+Midi::Midi(){};
+
+Midi::~Midi(){};
+
+Midi::Midi(std::string file_name)
 {
-    current_file.read_file(file_name);
+    file_stream.read_file(file_name);
 };
 
-// Private //-----------------------------------------------------------------------------------------
+// Methods //--------------------------------------------------------------------------------------
 
-int midi::Midi::parse_header()
+// Public:
+
+error_status_t midi::Midi::parse_midi()
 {
-    if (!current_file.file_good)
+    error_status_t error;
+    error = parse_header();
+    if (error)
+    {
+        std::cout << "Problem parsing Header" << std::endl;
+        return -1;
+    };
+
+    if (num_tracks <= 0) {
+        std::cout << "There are no tracks in the file" << std::endl;
+        return -1;
+    }
+    std::cout << "num_tracks: " << num_tracks << std::endl;
+    for (size_t i = 0; i < num_tracks; i++) {
+        std::cout << "Reading track " << i << std::endl;
+        error = read_track();
+        if (error) {
+            std::cout << "Error reading track " << i << std::endl;
+            return error;
+        }
+    }
+    return 0;
+}
+
+std::vector<Track> Midi::get_tracks()
+{
+    return all_tracks;
+}
+
+// Private:
+
+error_status_t Midi::parse_header()
+{
+    if (!file_stream.is_good())
     {
         std::cout << "File not found" << std::endl;
         return -1;
     }
 
     // Read Header contents
-    std::vector<char> header_indentifier = current_file.get_next(HEADER_IDENTIFIER_LENGTH);
+    std::vector<char> header_indentifier = file_stream.get_next(HEADER_IDENTIFIER_LENGTH);
     std::string header = std::string(header_indentifier.begin(), header_indentifier.end());
     if (header != "MThd") {
         std::cout << "File is not a midi file, Found Header as: " << std::hex << header << std::endl;
         return -1;
     }
-    uint64_t header_length = current_file.read_fixed_length(HEADER_LENGTH_SIZE);
+    uint64_t header_length = file_stream.read_fixed_length(HEADER_LENGTH_SIZE);
     std::cout << "Header Length: " << header_length << std::endl;
 
     if (header_length != STANDARD_HEADER_LENGTH)
@@ -48,12 +93,10 @@ int midi::Midi::parse_header()
         return -1;
     }
 
-
-
     // Parse time format
-    uint16_t format = current_file.read_fixed_length(2);
-    uint16_t number_of_tracks = current_file.read_fixed_length(2);
-    uint16_t division = current_file.read_fixed_length(2);
+    uint16_t format = file_stream.read_fixed_length(2);
+    uint16_t number_of_tracks = file_stream.read_fixed_length(2);
+    uint16_t division = file_stream.read_fixed_length(2);
 
 
     format_type = format;
@@ -80,57 +123,29 @@ int midi::Midi::parse_header()
     return 0;
 };
 
-int midi::Midi::read_track()
+error_status_t Midi::read_track()
 {
-    int ret;
-    Track curr_track(&current_file);
-    ret = curr_track.read_track_PPQN();
+    error_status_t error = 0;
+    Track curr_track;
+    error = curr_track.read_track_PPQN(file_stream);
     
-    if (ret != 0)
+    if (error)
     {
         std::cout << "Problem reading the track" << std::endl;
-        return ret;
+        return error;
     };
 
     std::vector<event_t> events = curr_track.get_events();
     std::cout << "Num Events: " << events.size() << std::endl;
     all_tracks.push_back(curr_track);
-    return 0;
+    return error;
 };
 
-int midi::Midi::parse_midi()
+error_status_t Midi::open_to_read(std::string file_name)
 {
-    int ret;
-    ret = parse_header();
-    if (ret != 0)
-    {
-        std::cout << "Problem parsing Header" << std::endl;
-        return -1;
-    };
-
-    if (num_tracks <= 0) {
-        std::cout << "There are no tracks in the file" << std::endl;
-        return -1;
-    }
-    std::cout << "num_tracks: " << num_tracks << std::endl;
-    for (size_t i = 0; i < num_tracks; i++) {
-        std::cout << "Reading track " << i << std::endl;
-        ret = read_track();
-        if (ret != 0) {
-            std::cout << "Error" << std::endl;
-            break;
-        }
-    }
-    return ret;
+    Midi::file_stream = Reader();
+    return 0;
 }
-
-// Public //------------------------------------------------------------------------------------------
-
-std::vector<midi::Track> midi::Midi::get_tracks()
-{
-    return all_tracks;
-}
-
 
 
 /*
@@ -163,6 +178,6 @@ std::vector<midi::Track> midi::Midi::get_tracks()
         case 0xD: break;// Channel Aftertouch
         case 0xE: break;// Pitch Bend
     }
-
-
 */
+
+} // namespace midi
