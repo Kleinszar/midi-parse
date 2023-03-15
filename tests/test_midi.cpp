@@ -5,8 +5,8 @@ using namespace midi;
 
 int main()
 {
-    Midi test_midi("PPQN.mid");
-    int ret = test_midi.parse_midi();
+    Midi test_midi;
+    int ret = test_midi.parse_midi("PPQN.mid");
     vector<Track> tracks = test_midi.get_tracks();
 
     cout << "Listing track information" << endl;

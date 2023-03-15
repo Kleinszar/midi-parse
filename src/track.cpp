@@ -145,12 +145,6 @@ const std::map<int, uint8_t> Track::REG_EVENT_PARAM_LENGTHS = {
     {0xE, 2}, // 14 - Pitch Bend (val lsb, val msb)
 };
 
-// Constructors //---------------------------------------------------------------------------------
-
-Track::~Track(){};
-
-Track::Track(){};
-
 // Methods //--------------------------------------------------------------------------------------
 
 // Public:

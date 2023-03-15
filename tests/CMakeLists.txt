@@ -4,7 +4,7 @@ target_link_libraries(Test_MIDI_Util midi_lib)
 target_include_directories(Test_MIDI_Util PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 # Main Program
-add_executable(Test_MIDI_Main test.cpp)
+add_executable(Test_MIDI_Main test_midi.cpp)
 target_link_libraries(Test_MIDI_Main midi_lib)
 target_include_directories(Test_MIDI_Main PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_compile_options(Test_MIDI_Main PRIVATE -Wall)

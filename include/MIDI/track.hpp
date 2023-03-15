@@ -48,13 +48,6 @@ private:
     uint32_t time_signiture_denominator;
     std::vector<event_t> event_list;
 
-// Constructors //---------------------------------------------------------------------------------
-public:
-
-    Track();
-
-    ~Track();
-
 // Methods //--------------------------------------------------------------------------------------
 public:
     // Track reading

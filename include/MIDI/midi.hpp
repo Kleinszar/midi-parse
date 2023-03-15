@@ -32,7 +32,7 @@ private:
 private:
     uint64_t format_type;
     uint64_t division_type;
-    Reader file_stream;
+    Reader file_stream_reader;
 
     uint16_t division_time;
     uint16_t num_tracks;
@@ -41,37 +41,15 @@ private:
 
     std::vector<Track> all_tracks;
 
-// Constructors //---------------------------------------------------------------------------------
-public:
-
-    // Constructors
-
-    Midi();
-
-    /**
-     * Create a midi object and opens a Reader given a name.
-     * @param file_name The name of the file to open.
-    */
-    Midi(std::string file_name);
-
-    ~Midi();
-
 // Methods //--------------------------------------------------------------------------------------
 public:
-    // Midi parsing
-    /**
-     * Opens a Reader with a file name.
-     * @param file_name The name of the file to open.
-    */
-    error_status_t open_to_read(std::string file_name);
 
     /**
-     * Parses the data that the Reader has read.
-     * Requires Reader to have data first.
-     * Loads all the tracks contained in the Reader data.
+     * Parses the data from a midi file.
+     * Loads all the tracks contained in the midi file.
      * @return Error status, 0 for success.
     */
-    error_status_t parse_midi();
+    error_status_t parse_midi(std::string file_name);
 
     /**
      * Gets all the parsed tracks.

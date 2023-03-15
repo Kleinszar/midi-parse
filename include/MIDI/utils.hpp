@@ -33,14 +33,13 @@ private:
 
 // Methods //--------------------------------------------------------------------------------------
 public:
-    Reader();
-    ~Reader();
 
     /**
      * Open a file named {file_name} in the current directory for reading.
      * @param file_name String name of the file.
+     * @return Error status, 0 for success.
     */
-    error_status_t read_file(std::string file_name);
+    error_status_t open_file_stream(std::string file_name);
 
     /**
      * @return True if reader has data.

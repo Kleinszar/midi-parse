@@ -7,27 +7,11 @@ namespace midi
 // CLASS Reader //---------------------------------------------------------------------------------
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Constants //------------------------------------------------------------------------------------
-
-//
-
-// Constructors //---------------------------------------------------------------------------------
-
-Reader::Reader()
-{
-    bytes_read = 0;
-};
-
-Reader::~Reader()
-{
-    data.clear();
-};
-
 // Methods //--------------------------------------------------------------------------------------
 
 // Public:
 
-error_status_t Reader::read_file(std::string file_name)
+error_status_t Reader::open_file_stream(std::string file_name)
 {
     std::ifstream input_stream(file_name, std::ios::binary);
 
@@ -42,11 +26,14 @@ error_status_t Reader::read_file(std::string file_name)
         (std::istreambuf_iterator<char>())
     );
 
+    bytes_read = 0;
+
     if(input_stream.bad())
     {
         perror(("Error while reading file " + file_name).c_str());
         return -1;
     }
+
     return 0;
 }
 
@@ -104,10 +91,6 @@ uint64_t Reader::read_fixed_length(uint64_t len)
     bytes_read += len;
     return value;
 };
-
-// Private:
-
-/* Empty */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // CLASS Writer //---------------------------------------------------------------------------------

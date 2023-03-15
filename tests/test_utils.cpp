@@ -105,7 +105,7 @@ int test_vl()
 
     cout << endl << "Testing Read File" << endl << endl;
     Reader vl_read;
-    int error = vl_read.read_file(test_file);
+    int error = vl_read.open_file_stream(test_file);
     if (error)
     {
         cout << "File does not exits" << endl;
