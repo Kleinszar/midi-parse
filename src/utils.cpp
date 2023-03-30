@@ -11,48 +11,48 @@ namespace midi
 
 // Public:
 
-error_status_t Reader::open_file_stream(std::string file_name)
+error_status_t Reader::openFileStream(std::string fileName)
 {
-    std::ifstream input_stream(file_name, std::ios::binary);
+    std::ifstream inputStream(fileName, std::ios::binary);
 
-    if (!input_stream.is_open())
+    if (!inputStream.is_open())
     {
-        perror(("Cannot open file " + file_name).c_str());
+        perror(("Cannot open file " + fileName).c_str());
         return -1;
     }
 
     data = std::vector<uint8_t>(
-        (std::istreambuf_iterator<char>(input_stream)),
+        (std::istreambuf_iterator<char>(inputStream)),
         (std::istreambuf_iterator<char>())
     );
 
-    bytes_read = 0;
+    bytesRead = 0;
 
-    if(input_stream.bad())
+    if(inputStream.bad())
     {
-        perror(("Error while reading file " + file_name).c_str());
+        perror(("Error while reading file " + fileName).c_str());
         return -1;
     }
 
     return 0;
 }
 
-bool Reader::is_good()
+bool Reader::isGood()
 {
     return !data.empty();
 }
 
-std::vector<char> Reader::get_next(uint64_t num_bytes)
+std::vector<char> Reader::getNext(uint64_t numBytes)
 {
-    auto position = data.begin() + bytes_read;
-    std::vector<char> next_block = std::vector<char>(position, position + num_bytes);
-    bytes_read += num_bytes;
+    auto position = data.begin() + bytesRead;
+    std::vector<char> next_block = std::vector<char>(position, position + numBytes);
+    bytesRead += numBytes;
     return next_block;
 };
 
-uint32_t Reader::read_variable_length()
+uint32_t Reader::readVariableLength()
 {
-    uint64_t curr_position = bytes_read;
+    uint64_t currPosition = bytesRead;
     uint64_t length = 0;
     uint32_t value = 0;
 
@@ -61,34 +61,34 @@ uint32_t Reader::read_variable_length()
     * Up to a max of 4 bytes (32 bits). Bit 7 is a flag, that is set if the value has not ended.
     * All 1 byte chunks have bit 7 set except for the last chunk, indicating the end.
     */
-    for (uint64_t i = curr_position; i < curr_position + MAX_BYTES; i++)
+    for (uint64_t i = currPosition; i < currPosition + MAX_BYTES; i++)
     {
-        uint8_t curr_byte = data.at(i);
-        value = (value << BITS_LENGTH) + (curr_byte & MASK_VARIABLE_LENGTH_VALUE);
+        uint8_t currByte = data.at(i);
+        value = (value << BITS_LENGTH) + (currByte & MASK_VARIABLE_LENGTH_VALUE);
         ++length;
         // Check flag for end of variable value, set = not ended.
-        int flag = (curr_byte & MASK_VARIABLE_LENGTH_FLAG) >> FLAG_OFFSET;
+        int flag = (currByte & MASK_VARIABLE_LENGTH_FLAG) >> FLAG_OFFSET;
 
         if (flag == 0)
         {
             break;
         }
     }
-    bytes_read += length;
+    bytesRead += length;
     return value;
 };
 
-uint64_t Reader::read_fixed_length(uint64_t len)
+uint64_t Reader::readFixedLength(uint64_t len)
 {
 
-    uint64_t curr_posititon = bytes_read;
+    uint64_t currPosititon = bytesRead;
     uint64_t value = 0;
-    for (uint64_t i = curr_posititon; i < curr_posititon + len; i++)
+    for (uint64_t i = currPosititon; i < currPosititon + len; i++)
     {
-        uint8_t curr_byte = data.at(i);
-        value = (value << 8) + curr_byte;
+        uint8_t currByte = data.at(i);
+        value = (value << 8) + currByte;
     }
-    bytes_read += len;
+    bytesRead += len;
     return value;
 };
 

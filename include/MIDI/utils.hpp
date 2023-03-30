@@ -26,8 +26,8 @@ private:
     static constexpr uint8_t MASK_VARIABLE_LENGTH_VALUE {0b0111'1111};
     static constexpr uint8_t MASK_VARIABLE_LENGTH_FLAG {0b1000'0000};
 
-    uint64_t total_length;
-    uint64_t bytes_read;
+    uint64_t totalLength;
+    uint64_t bytesRead;
     std::vector<uint8_t> data;
     
 
@@ -39,25 +39,25 @@ public:
      * @param file_name String name of the file.
      * @return Error status, 0 for success.
     */
-    error_status_t open_file_stream(std::string file_name);
+    error_status_t openFileStream(std::string fileName);
 
     /**
      * @return True if reader has data.
     */
-    bool is_good();
+    bool isGood();
 
     /**
-     * Put the next 'num_bytes' bytes into the buffer 's'.
-     * @param num_bytes The number of bytes to read.
+     * Put the next 'numBytes' bytes into the buffer 's'.
+     * @param numBytes The number of bytes to read.
      * @return A vector of characters read.
     */
-    std::vector<char> get_next(uint64_t num_bytes);
+    std::vector<char> getNext(uint64_t numBytes);
 
     /**
     * Reads fron the file, a value of variable length.
     * @return the value read.
     */
-    uint32_t read_variable_length();
+    uint32_t readVariableLength();
 
     /**
      * Reads from the file, a value with a fixed length.
@@ -65,7 +65,7 @@ public:
      * @param len The length of the value.
      * @return The value read.
     */
-    uint64_t read_fixed_length(uint64_t len);
+    uint64_t readFixedLength(uint64_t len);
         
 };
 

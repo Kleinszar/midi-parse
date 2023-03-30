@@ -11,20 +11,24 @@ namespace midi
 {
 
 // Events split into two categories.
-enum event_category {meta, regular};
-
-// Event meta data container.
-struct event_t {
-    uint64_t delta_time;
-    uint64_t absolute_time;
-    int16_t event_type;
-    uint8_t args[2];
-    event_category category;
+enum class EventCategory
+{
+    meta,
+    regular
 };
 
-class Track {
+// Event meta data container.
+struct Event
+{
+    uint64_t deltaTime;
+    uint64_t absoluteTime;
+    int16_t eventType;
+    uint8_t args[2];
+    EventCategory category;
+};
 
-
+class Track
+{
 // Constants //------------------------------------------------------------------------------------
 private:
     static constexpr uint8_t EVENT_TYPE_MASK = {0b1111'0000};
@@ -42,11 +46,11 @@ private:
 
 // Variables //------------------------------------------------------------------------------------
 private:
-    std::string track_name;
-    uint64_t track_length;
-    uint32_t time_signiture_numerator;
-    uint32_t time_signiture_denominator;
-    std::vector<event_t> event_list;
+    std::string trackName;
+    uint64_t trackLength;
+    uint32_t timeSignitureNumerator;
+    uint32_t timeSignitureDenominator;
+    std::vector<Event> eventList;
 
 // Methods //--------------------------------------------------------------------------------------
 public:
@@ -58,7 +62,7 @@ public:
      * @param reader The reader to get data from.
      * @return Error status, 0 for success.
     */
-    error_status_t read_track_PPQN(Reader& reader);
+    error_status_t readTrackPPQN(Reader& reader);
     
     /**
      * Reads and consumes a track from the Reader.
@@ -67,19 +71,19 @@ public:
      * @return Error status, 0 for success.
      * TODO: UNIMPLEMENTED
     */
-    error_status_t read_track_SMTPE(Reader& reader);
+    error_status_t readTrackSMTPE(Reader& reader);
 
     /**
      * Gets the list of events.
      * @return A vector of all events in the track.
     */
-    std::vector<event_t> get_events();
+    std::vector<Event> getEvents();
 
     /**
      * Gets the name of the track.
      * @return The name.
     */
-    std::string get_name();
+    std::string getName();
 
 
 private:
@@ -90,7 +94,7 @@ private:
      * @param event The event object to store the parsed information.
      * @return Error status, 0 for sucess.
     */
-    error_status_t handle_next_meta_event(Reader& reader, event_t& event);
+    error_status_t handleNextMetaEvent(Reader& reader, Event& event);
 
     /**
      * Parse the next event as a regular event.
@@ -99,7 +103,7 @@ private:
      * @param type_and_channel Container for event type and channel number.
      * @return Error status, 0 for sucess.
     */
-    error_status_t handle_next_regular_event(Reader& reader, event_t& event, uint8_t type_and_channel);
+    error_status_t handleNextRegularEvent(Reader& reader, Event& event, uint8_t typeAndChannel);
 
 };
 

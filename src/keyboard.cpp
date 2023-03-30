@@ -47,14 +47,14 @@ const std::map<int, std::string> KeyBoard::NOTE_DICT_FLAT = {
 
 // Public:
 
-std::string KeyBoard::midi_to_note(int midi_value, bool sharp)
+std::string KeyBoard::midiToNote(int midiValue, bool sharp)
 {
     if (sharp) {
-        return NOTE_DICT_SHARP.at(midi_value) + std::to_string(midi_value / 12 - 2);
+        return NOTE_DICT_SHARP.at(midiValue) + std::to_string(midiValue / 12 - 2);
     }
     else
     {
-        return NOTE_DICT_FLAT.at(midi_value) + std::to_string(midi_value / 12 - 2);
+        return NOTE_DICT_FLAT.at(midiValue) + std::to_string(midiValue / 12 - 2);
     }
 }
 

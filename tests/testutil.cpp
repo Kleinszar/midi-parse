@@ -15,9 +15,9 @@ using namespace midi;
 // Overwrites the previous file
 // Credit: ElectRocnic
 // https://stackoverflow.com/questions/21819782/writing-hex-to-a-file
-int write_test_file(string file_name, string hex_data)
+int writeTestFile(string fileName, string hexData)
 {
-    string hex_string = hex_data;
+    string hex_string = hexData;
 
     basic_string<uint8_t> bytes;
 
@@ -51,7 +51,7 @@ int write_test_file(string file_name, string hex_data)
     string result(begin(bytes), end(bytes));
 
     // Write tests to file
-    ofstream output_file(file_name, ofstream::binary | ofstream::out | ofstream::trunc);
+    ofstream output_file(fileName, ofstream::binary | ofstream::out | ofstream::trunc);
 
     if (output_file.is_open())
     {
@@ -68,9 +68,9 @@ int write_test_file(string file_name, string hex_data)
 
 
 // Test variable length read from a file
-int test_vl()
+int testVl()
 {   
-    array<uint32_t, 12> expected_values = {
+    array<uint32_t, 12> expectedValues = {
         0x00000000,
         0x00000040,
         0x0000007F,
@@ -85,10 +85,10 @@ int test_vl()
         0x0FFFFFFF
     };
     
-    string test_file = "test_utils.txt";
+    string testFile = "test_utils.txt";
 
     cout << "\n__Writing test file__\n" << endl;
-    write_test_file(test_file,
+    writeTestFile(testFile,
         "00"
         "40"
         "7F"
@@ -104,8 +104,8 @@ int test_vl()
 
 
     cout << endl << "Testing Read File" << endl << endl;
-    Reader vl_read;
-    int error = vl_read.open_file_stream(test_file);
+    Reader vlRead;
+    int error = vlRead.openFileStream(testFile);
     if (error)
     {
         cout << "File does not exits" << endl;
@@ -114,12 +114,12 @@ int test_vl()
 
     cout << endl << "Checking values" << endl;
     bool flag = false;
-    for (size_t i = 0; i < expected_values.size(); i++)
+    for (size_t i = 0; i < expectedValues.size(); i++)
     {
-        cout << "*" << i+1 << "* Testing " << hex << expected_values[i] << endl;
-        int value = vl_read.read_variable_length();
+        cout << "*" << i+1 << "* Testing " << hex << expectedValues[i] << endl;
+        int value = vlRead.readVariableLength();
         cout << "Got " << hex << value;
-        if (expected_values[i] == value)
+        if (expectedValues[i] == value)
         {
             cout << " Pass" << endl;
         } else
@@ -135,6 +135,6 @@ int test_vl()
 int main()
 {
     // Test variable length reads
-    int error = test_vl();
+    int error = testVl();
     return error;
 };

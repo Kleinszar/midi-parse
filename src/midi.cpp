@@ -24,38 +24,38 @@ const std::map<int, std::string> Midi::DIVISION_TYPE = {
 
 // Public:
 
-error_status_t midi::Midi::parse_midi(std::string file_name)
+error_status_t midi::Midi::parseMidi(std::string fileName)
 {
     
     error_status_t error;
 
-    error = file_stream_reader.open_file_stream(file_name);
+    error = fileStreamReader.openFileStream(fileName);
     if (error)
     {
         std::cout << "Error opening file." << std::endl;
         return -1;
     }
 
-    error = parse_header();
+    error = parseHeader();
     if (error)
     {
         std::cout << "Problem parsing header." << std::endl;
         return -1;
     };
 
-    if (num_tracks <= 0) {
+    if (numTracks <= 0) {
         std::cout << "There are no tracks in the file" << std::endl;
         return -1;
     }
 
     // Clear previous data
-    all_tracks.clear();
+    allTracks.clear();
 
     // Parse all tracks
-    std::cout << "num_tracks: " << num_tracks << std::endl;
-    for (size_t i = 0; i < num_tracks; i++) {
+    std::cout << "num_tracks: " << numTracks << std::endl;
+    for (size_t i = 0; i < numTracks; i++) {
         std::cout << "Reading track " << i << std::endl;
-        error = read_track();
+        error = readTrack();
         if (error) {
             std::cout << "Error reading track " << i << std::endl;
             return error;
@@ -64,29 +64,29 @@ error_status_t midi::Midi::parse_midi(std::string file_name)
     return 0;
 }
 
-std::vector<Track> Midi::get_tracks()
+std::vector<Track> Midi::getTracks()
 {
-    return all_tracks;
+    return allTracks;
 }
 
 // Private:
 
-error_status_t Midi::parse_header()
+error_status_t Midi::parseHeader()
 {
-    if (!file_stream_reader.is_good())
+    if (!fileStreamReader.isGood())
     {
         std::cout << "File not found" << std::endl;
         return -1;
     }
 
     // Read Header contents
-    std::vector<char> header_indentifier = file_stream_reader.get_next(HEADER_IDENTIFIER_LENGTH);
+    std::vector<char> header_indentifier = fileStreamReader.getNext(HEADER_IDENTIFIER_LENGTH);
     std::string header = std::string(header_indentifier.begin(), header_indentifier.end());
     if (header != "MThd") {
         std::cout << "File is not a midi file, Found Header as: " << std::hex << header << std::endl;
         return -1;
     }
-    uint64_t header_length = file_stream_reader.read_fixed_length(HEADER_LENGTH_SIZE);
+    uint64_t header_length = fileStreamReader.readFixedLength(HEADER_LENGTH_SIZE);
     std::cout << "Header Length: " << header_length << std::endl;
 
     if (header_length != STANDARD_HEADER_LENGTH)
@@ -96,40 +96,40 @@ error_status_t Midi::parse_header()
     }
 
     // Parse time format
-    uint16_t format = file_stream_reader.read_fixed_length(2);
-    uint16_t number_of_tracks = file_stream_reader.read_fixed_length(2);
-    uint16_t division = file_stream_reader.read_fixed_length(2);
+    uint16_t format = fileStreamReader.readFixedLength(2);
+    uint16_t number_of_tracks = fileStreamReader.readFixedLength(2);
+    uint16_t division = fileStreamReader.readFixedLength(2);
 
 
-    format_type = format;
-    std::cout << "Format - " << FILE_FORMAT.at(format_type) << std::endl;
+    formatType = format;
+    std::cout << "Format - " << FILE_FORMAT.at(formatType) << std::endl;
 
-    num_tracks = number_of_tracks;
-    std::cout << "Number of Tracks: " << num_tracks << std::endl;
+    numTracks = number_of_tracks;
+    std::cout << "Number of Tracks: " << numTracks << std::endl;
 
-    division_type = (division & DIVISION_TIME_MASK) >> 15;
-    std::cout << "Division Type - " << DIVISION_TYPE.at(division_type) << std::endl;
+    divisionType = (division & DIVISION_TIME_MASK) >> 15;
+    std::cout << "Division Type - " << DIVISION_TYPE.at(divisionType) << std::endl;
 
-    if (division_type == 0) // PPQN
+    if (divisionType == 0) // PPQN
     {
-        division_time = (division & DIVISION_TIME_MASK);
-        std::cout << "Beats per Quarter Note: " << division_time << std::endl;
+        divisionTime = (division & DIVISION_TIME_MASK);
+        std::cout << "Beats per Quarter Note: " << divisionTime << std::endl;
     }
     else // SMPTE
     {
         int8_t smtpe_format = (division & SMTPE_FORMAT_MASK) >> 8;
         fps = ~division + 1; // 2's complement inversion
-        frame_resolution = (division & TICKS_PER_FRAME_MASK); // Number of subdivision per frame
-        std::cout << "fps: " << fps << "\t" << "resolution: " << frame_resolution << std::endl;
+        frameResolution = (division & TICKS_PER_FRAME_MASK); // Number of subdivision per frame
+        std::cout << "fps: " << fps << "\t" << "resolution: " << frameResolution << std::endl;
     }
     return 0;
 };
 
-error_status_t Midi::read_track()
+error_status_t Midi::readTrack()
 {
     error_status_t error = 0;
     Track curr_track;
-    error = curr_track.read_track_PPQN(file_stream_reader);
+    error = curr_track.readTrackPPQN(fileStreamReader);
     
     if (error)
     {
@@ -137,9 +137,9 @@ error_status_t Midi::read_track()
         return error;
     };
 
-    std::vector<event_t> events = curr_track.get_events();
+    std::vector<Event> events = curr_track.getEvents();
     std::cout << "Num Events: " << events.size() << std::endl;
-    all_tracks.push_back(curr_track);
+    allTracks.push_back(curr_track);
     return error;
 };
 
@@ -164,7 +164,7 @@ error_status_t Midi::read_track()
         default: break; // Not implemented
     }
 
-    switch (event_type) {
+    switch (eventType) {
         case 0x8: break;// Note OF
         case 0x9: break;// Note ON
         case 0xA: break;// Note Aftertouch

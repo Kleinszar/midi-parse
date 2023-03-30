@@ -30,16 +30,16 @@ private:
 
 // Variables //------------------------------------------------------------------------------------
 private:
-    uint64_t format_type;
-    uint64_t division_type;
-    Reader file_stream_reader;
+    uint64_t formatType;
+    uint64_t divisionType;
+    Reader fileStreamReader;
 
-    uint16_t division_time;
-    uint16_t num_tracks;
+    uint16_t divisionTime;
+    uint16_t numTracks;
     uint16_t fps;
-    uint16_t frame_resolution;
+    uint16_t frameResolution;
 
-    std::vector<Track> all_tracks;
+    std::vector<Track> allTracks;
 
 // Methods //--------------------------------------------------------------------------------------
 public:
@@ -49,13 +49,13 @@ public:
      * Loads all the tracks contained in the midi file.
      * @return Error status, 0 for success.
     */
-    error_status_t parse_midi(std::string file_name);
+    error_status_t parseMidi(std::string fileName);
 
     /**
      * Gets all the parsed tracks.
      * @return A vector of the all the tracks.
     */
-    std::vector<Track> get_tracks();
+    std::vector<Track> getTracks();
 
 private:
     // Helpers
@@ -63,13 +63,13 @@ private:
      * Parses the header from the Reader file.
      * @return Error status, 0 for success.
     */
-    error_status_t parse_header();
+    error_status_t parseHeader();
 
     /**
      * Reads a single track from the Reader file.
      * @return Error status, 0 for success.
     */
-    error_status_t read_track();
+    error_status_t readTrack();
 
 };
 

@@ -149,13 +149,13 @@ const std::map<int, uint8_t> Track::REG_EVENT_PARAM_LENGTHS = {
 
 // Public:
 
-error_status_t Track::read_track_PPQN(Reader& reader)
+error_status_t Track::readTrackPPQN(Reader& reader)
 {
     int flag = 0;
     int num_events = 0;
     uint64_t total_time = 0;
 
-    std::vector<char> track_identifier = reader.get_next(TRACK_IDENTIFIER_LENGTH);
+    std::vector<char> track_identifier = reader.getNext(TRACK_IDENTIFIER_LENGTH);
     std::string head = std::string(track_identifier.begin(), track_identifier.end());
     if (head != "MTrk") {
         std::cout << "There is no track identifier present. Found: " << std::hex << head << std::endl;
@@ -163,57 +163,57 @@ error_status_t Track::read_track_PPQN(Reader& reader)
         return -1;
     }
 
-    int32_t track_length = reader.read_fixed_length(4);
+    int32_t track_length = reader.readFixedLength(4);
 
     std::cout << "Track Length: " << track_length << "\n";
 
     while (flag == 0)
     {
-        event_t next_event;
+        Event nextEvent;
 
-        uint32_t delta_time = reader.read_variable_length();
-        next_event.delta_time = delta_time;
+        uint32_t deltaTime = reader.readVariableLength();
+        nextEvent.deltaTime = deltaTime;
 
-        total_time += delta_time;
-        next_event.absolute_time = total_time;
+        total_time += deltaTime;
+        nextEvent.absoluteTime = total_time;
 
-        uint8_t event_type = reader.read_fixed_length(1);
-        if (event_type == META_EVENT_IDENTIFIER)
+        uint8_t eventType = reader.readFixedLength(1);
+        if (eventType == META_EVENT_IDENTIFIER)
         {
-            flag = handle_next_meta_event(reader, next_event);
+            flag = handleNextMetaEvent(reader, nextEvent);
         }
         else
         {
-            flag = handle_next_regular_event(reader, next_event, event_type);
+            flag = handleNextRegularEvent(reader, nextEvent, eventType);
         }
-        event_list.push_back(next_event);
+        eventList.push_back(nextEvent);
     }
 
     return 0;
 };
 
-std::vector<event_t> Track::get_events()
+std::vector<Event> Track::getEvents()
 {
-    return event_list;
+    return eventList;
 }
 
-std::string Track::get_name()
+std::string Track::getName()
 {
-    return track_name;
+    return trackName;
 }
 
 // Private:
 
-error_status_t Track::handle_next_meta_event(Reader& reader, event_t& event)
+error_status_t Track::handleNextMetaEvent(Reader& reader, Event& event)
 {
-    event.category = meta;
+    event.category = EventCategory::meta;
     
-    int event_subtype = reader.read_fixed_length(1);
-    uint32_t event_length = reader.read_variable_length();
-    std::vector<char> event_data = reader.get_next(event_length);
+    int event_subtype = reader.readFixedLength(1);
+    uint32_t event_length = reader.readVariableLength();
+    std::vector<char> event_data = reader.getNext(event_length);
 
     // Process data
-    event.event_type = event_subtype;
+    event.eventType = event_subtype;
 
     // End
     
@@ -227,22 +227,22 @@ error_status_t Track::handle_next_meta_event(Reader& reader, event_t& event)
 
 };
 
-error_status_t Track::handle_next_regular_event(Reader& reader, event_t& event, uint8_t type_and_channel)
+error_status_t Track::handleNextRegularEvent(Reader& reader, Event& event, uint8_t typeAndChannel)
 {
-    event.category = regular;
+    event.category = EventCategory::regular;
 
-    uint8_t event_type = (type_and_channel & EVENT_TYPE_MASK) >> 4;
-    uint8_t midi_channel = (type_and_channel & MIDI_CHANNEL_MASK);
+    uint8_t eventType = (typeAndChannel & EVENT_TYPE_MASK) >> 4;
+    uint8_t midi_channel = (typeAndChannel & MIDI_CHANNEL_MASK);
 
-    // /*DEBUG*/ std::cout << "Reg Event: " << MIDI_REG_EVENTS.at(event_type) << "\n";
+    // /*DEBUG*/ std::cout << "Reg Event: " << MIDI_REG_EVENTS.at(eventType) << "\n";
 
-    event.event_type = event_type;
+    event.eventType = eventType;
 
     uint8_t event_args[2];
 
-    for (size_t i = 0; i < REG_EVENT_PARAM_LENGTHS.at(event_type); i++)
+    for (size_t i = 0; i < REG_EVENT_PARAM_LENGTHS.at(eventType); i++)
     {
-        event.args[i] = reader.read_fixed_length(1);
+        event.args[i] = reader.readFixedLength(1);
         // /*DEBUG*/ std::cout << "Event argument: " << event.args[i] << "\n";
     }
     return 0;
