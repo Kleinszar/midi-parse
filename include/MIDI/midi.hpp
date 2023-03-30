@@ -30,16 +30,16 @@ private:
 
 // Variables //------------------------------------------------------------------------------------
 private:
-    uint64_t formatType;
-    uint64_t divisionType;
-    Reader fileStreamReader;
+    uint64_t formatType_;
+    uint64_t divisionType_;
+    Reader fileStreamReader_;
 
-    uint16_t divisionTime;
-    uint16_t numTracks;
-    uint16_t fps;
-    uint16_t frameResolution;
+    uint16_t divisionTime_;
+    uint16_t numTracks_;
+    uint16_t fps_;
+    uint16_t frameResolution_;
 
-    std::vector<Track> allTracks;
+    std::vector<Track> allTracks_;
 
 // Methods //--------------------------------------------------------------------------------------
 public:
@@ -55,7 +55,7 @@ public:
      * Gets all the parsed tracks.
      * @return A vector of the all the tracks.
     */
-    std::vector<Track> getTracks();
+    std::vector<Track> allTracks();
 
 private:
     // Helpers

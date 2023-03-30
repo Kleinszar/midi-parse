@@ -21,12 +21,12 @@ error_status_t Reader::openFileStream(std::string fileName)
         return -1;
     }
 
-    data = std::vector<uint8_t>(
+    data_ = std::vector<uint8_t>(
         (std::istreambuf_iterator<char>(inputStream)),
         (std::istreambuf_iterator<char>())
     );
 
-    bytesRead = 0;
+    bytesRead_ = 0;
 
     if(inputStream.bad())
     {
@@ -39,20 +39,20 @@ error_status_t Reader::openFileStream(std::string fileName)
 
 bool Reader::isGood()
 {
-    return !data.empty();
+    return !data_.empty();
 }
 
 std::vector<char> Reader::getNext(uint64_t numBytes)
 {
-    auto position = data.begin() + bytesRead;
+    auto position = data_.begin() + bytesRead_;
     std::vector<char> next_block = std::vector<char>(position, position + numBytes);
-    bytesRead += numBytes;
+    bytesRead_ += numBytes;
     return next_block;
 };
 
 uint32_t Reader::readVariableLength()
 {
-    uint64_t currPosition = bytesRead;
+    uint64_t currPosition = bytesRead_;
     uint64_t length = 0;
     uint32_t value = 0;
 
@@ -63,7 +63,7 @@ uint32_t Reader::readVariableLength()
     */
     for (uint64_t i = currPosition; i < currPosition + MAX_BYTES; i++)
     {
-        uint8_t currByte = data.at(i);
+        uint8_t currByte = data_.at(i);
         value = (value << BITS_LENGTH) + (currByte & MASK_VARIABLE_LENGTH_VALUE);
         ++length;
         // Check flag for end of variable value, set = not ended.
@@ -74,21 +74,21 @@ uint32_t Reader::readVariableLength()
             break;
         }
     }
-    bytesRead += length;
+    bytesRead_ += length;
     return value;
 };
 
 uint64_t Reader::readFixedLength(uint64_t len)
 {
 
-    uint64_t currPosititon = bytesRead;
+    uint64_t currPosititon = bytesRead_;
     uint64_t value = 0;
     for (uint64_t i = currPosititon; i < currPosititon + len; i++)
     {
-        uint8_t currByte = data.at(i);
+        uint8_t currByte = data_.at(i);
         value = (value << 8) + currByte;
     }
-    bytesRead += len;
+    bytesRead_ += len;
     return value;
 };
 

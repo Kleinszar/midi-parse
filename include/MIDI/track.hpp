@@ -13,8 +13,8 @@ namespace midi
 // Events split into two categories.
 enum class EventCategory
 {
-    meta,
-    regular
+    META,
+    REGULAR
 };
 
 // Event meta data container.
@@ -46,11 +46,11 @@ private:
 
 // Variables //------------------------------------------------------------------------------------
 private:
-    std::string trackName;
-    uint64_t trackLength;
-    uint32_t timeSignitureNumerator;
-    uint32_t timeSignitureDenominator;
-    std::vector<Event> eventList;
+    std::string trackName_;
+    uint64_t trackLength_;
+    uint32_t timeSignitureNumerator_;
+    uint32_t timeSignitureDenominator_;
+    std::vector<Event> eventList_;
 
 // Methods //--------------------------------------------------------------------------------------
 public:
@@ -77,13 +77,13 @@ public:
      * Gets the list of events.
      * @return A vector of all events in the track.
     */
-    std::vector<Event> getEvents();
+    std::vector<Event> allEvents();
 
     /**
      * Gets the name of the track.
      * @return The name.
     */
-    std::string getName();
+    std::string trackName();
 
 
 private:

@@ -186,27 +186,27 @@ error_status_t Track::readTrackPPQN(Reader& reader)
         {
             flag = handleNextRegularEvent(reader, nextEvent, eventType);
         }
-        eventList.push_back(nextEvent);
+        eventList_.push_back(nextEvent);
     }
 
     return 0;
 };
 
-std::vector<Event> Track::getEvents()
+std::vector<Event> Track::allEvents()
 {
-    return eventList;
+    return eventList_;
 }
 
-std::string Track::getName()
+std::string Track::trackName()
 {
-    return trackName;
+    return trackName_;
 }
 
 // Private:
 
 error_status_t Track::handleNextMetaEvent(Reader& reader, Event& event)
 {
-    event.category = EventCategory::meta;
+    event.category = EventCategory::META;
     
     int event_subtype = reader.readFixedLength(1);
     uint32_t event_length = reader.readVariableLength();
@@ -229,7 +229,7 @@ error_status_t Track::handleNextMetaEvent(Reader& reader, Event& event)
 
 error_status_t Track::handleNextRegularEvent(Reader& reader, Event& event, uint8_t typeAndChannel)
 {
-    event.category = EventCategory::regular;
+    event.category = EventCategory::REGULAR;
 
     uint8_t eventType = (typeAndChannel & EVENT_TYPE_MASK) >> 4;
     uint8_t midi_channel = (typeAndChannel & MIDI_CHANNEL_MASK);

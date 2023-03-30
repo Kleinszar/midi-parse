@@ -26,7 +26,7 @@ public:
 // Methods //--------------------------------------------------------------------------------------
 public:
     std::string midiToNote(int midi_value, bool sharp);
-    void note_on();
+    void noteOn();
 };
 
 

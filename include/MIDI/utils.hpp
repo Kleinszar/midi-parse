@@ -26,9 +26,9 @@ private:
     static constexpr uint8_t MASK_VARIABLE_LENGTH_VALUE {0b0111'1111};
     static constexpr uint8_t MASK_VARIABLE_LENGTH_FLAG {0b1000'0000};
 
-    uint64_t totalLength;
-    uint64_t bytesRead;
-    std::vector<uint8_t> data;
+    uint64_t totalLength_;
+    uint64_t bytesRead_;
+    std::vector<uint8_t> data_;
     
 
 // Methods //--------------------------------------------------------------------------------------
